@@ -1,13 +1,9 @@
 const express = require('express');
-const { getCategories, newMessage } = require('./controllers/controller');
+const { getCategories } = require('./controllers/controller');
 
 const app = express();
-app.use(express.json());
-
-app.get("/api", newMessage);
 
 app.get('/api/categories', getCategories);
-
 
 
 //ERROR HANDLING
@@ -15,5 +11,10 @@ app.get('/api/categories', getCategories);
 app.all("/*", (req, res) => {
     res.status(404).send({ msg: "Invalid URL" });
   });
+
+app.use((err, req, res, next) => {
+  console.log(err);
+  res.status(500).send('Server Error!');
+});
 
 module.exports = app;

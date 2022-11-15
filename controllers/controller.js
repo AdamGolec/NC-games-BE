@@ -1,11 +1,10 @@
 const { categories } = require("../models/model");
 
-exports.newMessage = (req, res, next) => {
-  res.send({ message: "all ok" }).status(200);
-};
-
-exports.getCategories = (req, res) => {
+exports.getCategories = (req, res, next) => {
   categories().then((category) => {
     res.status(200).send({ category });
+  })
+  .catch((err) => {
+    next(err);
   });
 };

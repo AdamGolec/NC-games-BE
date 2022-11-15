@@ -1,18 +1,13 @@
 const request = require("supertest");
 const app = require("../app.js");
+const seed = require('../db/seeds/seed');
+const testData = require('../db/data/test-data/index');
+
+beforeEach(() => {
+  return seed(testData);
+});
 
 describe("/api/categories", () => {
-  test('GET - 200: responds with "message": "all ok"', () => {
-    return request(app)
-      .get("/api")
-      .expect(200)
-      .then((res) => {
-        expect(res.body).toEqual({
-          message: "all ok",
-        });
-      });
-  });
-
   test("GET - 200: responds with an array of category objects, each of which should have properties: slug, description", () => {
     return request(app)
       .get("/api/categories")
@@ -20,10 +15,10 @@ describe("/api/categories", () => {
       .then(({ body }) => {
         expect(body.category).toEqual(
           expect.arrayContaining([
-            {
+            expect.objectContaining({
               slug: expect.any(String),
               description: expect.any(String),
-            },
+            }),
           ])
         );
       });
