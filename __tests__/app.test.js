@@ -45,7 +45,7 @@ describe("/api/reviews", () => {
       .then(({ body }) => {
         expect(body.review.length).toBeGreaterThan(0);
         // console.log(body.review);
-        body.review.forEach(review => { 
+        body.review.forEach((review) => {
           expect(review).toEqual({
             owner: expect.any(String),
             title: expect.any(String),
@@ -55,8 +55,8 @@ describe("/api/reviews", () => {
             created_at: expect.any(String),
             votes: expect.any(Number),
             designer: expect.any(String),
-            comment_count: expect.any(String)
-          })
+            comment_count: expect.any(String),
+          });
         });
       });
   });
@@ -66,17 +66,51 @@ describe("/api/reviews", () => {
       .get("/api/reviews")
       .expect(200)
       .then(({ body }) => {
-        console.log(body.review);
-        expect(body.review).toBeSortedBy("created_at", {descending: true});
+        expect(body.review).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+});
+
+describe("/api/reviews/:review_id", () => {
+  test("GET - 200: responds with a single matching review", () => {
+    const idOfReview = 3;
+    return request(app)
+      .get(`/api/reviews/${idOfReview}`)
+      .expect(200)
+      .then(({ body }) => {
+        // console.log(body);
+        expect(body.review).toEqual(
+          expect.objectContaining({
+            review_id: idOfReview,
+            title: "Ultimate Werewolf",
+            review_body: "We couldn't find the werewolf!",
+            designer: "Akihisa Okui",
+            review_img_url:
+              "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+            votes: 5,
+            category: "social deduction",
+            owner: "bainesface",
+            created_at: "2021-01-18T10:01:41.251Z",
+          })
+        );
       });
   });
 
-  test("GET - 404: Invalid Path", () => {
+  test('GET - 404: ID does not exist', () => {
     return request(app)
-      .get("/api/reviewswrongurl")
+      .get('/api/reviews/99999')
       .expect(404)
-      .then((res) => {
-        expect(res.body.msg).toBe("Invalid URL");
+      .then(({body}) => {
+        expect(body.msg).toBe('ID 99999 does not exist');
+      });
+  });
+  
+  test('GET - 400: Invalid input', () => {
+    return request(app)
+      .get('/api/reviews/notID')
+      .expect(400)
+      .then(({body}) => {
+        expect(body.msg).toBe('Invalid input');
       });
   });
 });
