@@ -1,4 +1,4 @@
-const { categories, reviews } = require("../models/model");
+const { categories, reviews, comments } = require("../models/model");
 
 exports.getCategories = (req, res, next) => {
   categories()
@@ -16,6 +16,18 @@ exports.getReviews = (req, res) => {
       res.status(200).send({ review });
     })
     .catch((err) => {
+      next(err);
+    });
+};
+
+exports.getComments = (req, res) => {
+  const { review_id } = req.params;
+  comments(review_id)
+    .then((comments) => {
+      res.status(200).send({comments});
+    })
+    .catch((err) => {
+      console.log(err);
       next(err);
     });
 };

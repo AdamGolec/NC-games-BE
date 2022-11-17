@@ -44,8 +44,7 @@ describe("/api/reviews", () => {
       .expect(200)
       .then(({ body }) => {
         expect(body.review.length).toBeGreaterThan(0);
-        // console.log(body.review);
-        body.review.forEach(review => { 
+        body.review.forEach((review) => {
           expect(review).toEqual({
             owner: expect.any(String),
             title: expect.any(String),
@@ -55,8 +54,8 @@ describe("/api/reviews", () => {
             created_at: expect.any(String),
             votes: expect.any(Number),
             designer: expect.any(String),
-            comment_count: expect.any(String)
-          })
+            comment_count: expect.any(String),
+          });
         });
       });
   });
@@ -66,8 +65,7 @@ describe("/api/reviews", () => {
       .get("/api/reviews")
       .expect(200)
       .then(({ body }) => {
-        console.log(body.review);
-        expect(body.review).toBeSortedBy("created_at", {descending: true});
+        expect(body.review).toBeSortedBy("created_at", { descending: true });
       });
   });
 
@@ -77,6 +75,30 @@ describe("/api/reviews", () => {
       .expect(404)
       .then((res) => {
         expect(res.body.msg).toBe("Invalid URL");
+      });
+  });
+});
+
+describe("/api/reviews/:review_id/comments", () => {
+  test("GET - 200: responds with array of comments for given review_id", () => {
+    const idOfReview = 2;
+    return request(app)
+      .get(`/api/reviews/${idOfReview}/comments`)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments.length).toBeGreaterThan(0);
+        body.comments.forEach((comment) => {
+          expect(comment).toEqual(
+            expect.objectContaining({
+              review_id: idOfReview,
+              author: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              body: expect.any(String),
+              comment_id: expect.any(Number),
+            })
+          );
+        });
       });
   });
 });
