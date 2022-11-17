@@ -166,3 +166,70 @@ describe("/api/reviews/:review_id/comments", () => {
       });
   });
 });
+
+describe("POST/api/reviews/:review_id/comments", () => {
+  test("POST - 201: responds with a comment added", () => {
+    const newComment = {
+      author: "mallionaire",
+      body: "some text",
+    };
+    const reviewID = 4;
+    return request(app)
+      .post(`/api/reviews/${reviewID}/comments`)
+      .send(newComment)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.comment).toEqual(
+          expect.objectContaining({
+            comment_id: 7,
+            ...newComment,
+          })
+        );
+      });
+  });
+
+  test("POST - 400: Empty author", () => {
+    const newComment = {
+      author: "",
+      body: "some text",
+    };
+    const reviewID = 4;
+    return request(app)
+      .post(`/api/reviews/${reviewID}/comments`)
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Missing input");
+      });
+  });
+
+  test("POST - 400: Empty body", () => {
+    const newComment = {
+      author: "mallionaire",
+      body: "",
+    };
+    const reviewID = 4;
+    return request(app)
+      .post(`/api/reviews/${reviewID}/comments`)
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Missing input");
+      });
+  });
+
+  test("POST - 400: Invalid author", () => {
+    const newComment = {
+      author: "someUser",
+      body: "some text",
+    };
+    const reviewID = 4;
+    return request(app)
+      .post(`/api/reviews/${reviewID}/comments`)
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Author someUser does not exist");
+      });
+  });
+});

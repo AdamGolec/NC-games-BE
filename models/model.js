@@ -64,3 +64,34 @@ exports.comments = (review_id) => {
       }
     });
 };
+
+exports.insertComment = ({ body, author }, review_id) => {
+  if (author === "" || body === "") {
+    return Promise.reject({
+      status: 400,
+      msg: `Missing input`,
+    });
+  } else {
+    return db
+      .query("SELECT * FROM comments WHERE author = $1;", [author])
+      .then((res) => {
+        if (res.rows.length === 0) {
+          return Promise.reject({
+            status: 400,
+            msg: `Author ${author} does not exist`,
+          });
+        } else {
+          return db
+            .query(
+              `INSERT INTO comments (body, author, review_id) 
+              VALUES ($1, $2, $3) RETURNING*;
+              `,
+              [body, author, review_id]
+            )
+            .then((result) => {
+              return result.rows[0];
+            });
+        }
+      });
+  }
+};
