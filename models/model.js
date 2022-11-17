@@ -42,30 +42,25 @@ exports.reviewsById = (review_id) => {
 
 exports.comments = (review_id) => {
   return db
-    .query(
-      `SELECT  
-    reviews.review_id,
-    author,
-    comments.created_at,
-    comments.votes,
-    comments.body, 
-    comments.comment_id 
-    FROM reviews
-    LEFT JOIN comments ON comments.review_id = reviews.review_id 
-    WHERE reviews.review_id=$1 
-    GROUP BY reviews.review_id, comments.body, comments.comment_id
-    ORDER BY created_at DESC;`, [review_id]
-    )
-    .then((result) => {
-      console.log(result.rows[0]);
-      if (!result.rows[0]) {
+    .query("SELECT * FROM reviews WHERE review_id = $1;", [review_id])
+    .then((res) => {
+      if (res.rows.length === 0) {
         return Promise.reject({
           status: 404,
-          msg: `ID ${review_id} does not exist`
+          msg: `ID ${review_id} does not exist`,
         });
-      } else if (result.rows[0].body === null) {
-        return []
+      } else {
+        return db
+          .query(
+            `SELECT * 
+          FROM comments
+          WHERE review_id=$1 
+          ORDER BY comments.created_at DESC;`,
+            [review_id]
+          )
+          .then((result) => {
+            return result.rows;
+          });
       }
-      return result.rows;
     });
 };
