@@ -1,11 +1,11 @@
 const express = require("express");
-const { getCategories, getReviews,getReviewsById, getComments } = require("./controllers/controller");
 const {
-  CustomErrors,
-  PsqlErrors,
-  ServerErrors,
-} = require('./errors/index.js');
-
+  getCategories,
+  getReviews,
+  getReviewsById,
+  getComments,
+} = require("./controllers/controller");
+const { CustomErrors, PsqlErrors, ServerErrors } = require("./errors/index.js");
 
 const app = express();
 

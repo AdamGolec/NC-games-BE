@@ -30,20 +30,20 @@ exports.reviewsById = (review_id) => {
   return db
     .query(`SELECT * FROM reviews WHERE review_id = $1`, [review_id])
     .then((result) => {
-      if (!result.rows[0]){
+      if (!result.rows[0]) {
         return Promise.reject({
           status: 404,
-          msg: `ID ${review_id} does not exist`
+          msg: `ID ${review_id} does not exist`,
         });
-      }      
+      }
       return result.rows[0];
     });
-  };
-  
-exports.comments = () => {
+};
+
+exports.comments = (review_id) => {
   return db
-  .query(
-    `SELECT  
+    .query(
+      `SELECT  
     reviews.review_id,
     author,
     comments.created_at,
@@ -52,10 +52,20 @@ exports.comments = () => {
     comments.comment_id 
     FROM reviews
     LEFT JOIN comments ON comments.review_id = reviews.review_id 
-    WHERE reviews.review_id=2
+    WHERE reviews.review_id=$1 
     GROUP BY reviews.review_id, comments.body, comments.comment_id
-    ORDER BY created_at DESC;`
+    ORDER BY created_at DESC;`, [review_id]
     )
     .then((result) => {
-        return result.rows})
+      console.log(result.rows[0]);
+      if (!result.rows[0]) {
+        return Promise.reject({
+          status: 404,
+          msg: `ID ${review_id} does not exist`
+        });
+      } else if (result.rows[0].body === null) {
+        return []
+      }
+      return result.rows;
+    });
 };

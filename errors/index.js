@@ -7,12 +7,12 @@ exports.CustomErrors = (err, req, res, next) => {
 };
 
 exports.PsqlErrors = (err, req, res, next) => {
-  if (err.code === '22P02') {
-    res.status(400).send({ msg: 'Invalid input' });
+  if (err.code === "22P02") {
+    res.status(400).send({ msg: "Invalid input" });
   } else next(err);
 };
 
 exports.ServerErrors = (err, req, res, next) => {
   console.log(err);
-  res.status(500).send({ msg: 'Server Error!' });
+  res.status(500).send({ msg: "Server Error!" });
 };
