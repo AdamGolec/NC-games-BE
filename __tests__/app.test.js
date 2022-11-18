@@ -252,3 +252,66 @@ describe("POST/api/reviews/:review_id/comments", () => {
       });
   });
 });
+
+describe("PATCH/api/reviews/:review_id", () => {
+  test("PATCH - 200: responds with updated review", () => {
+    const newVote = 99;
+    const reviewID = 2
+    const inc_votes = { inc_votes: newVote };
+    return request(app)
+      .patch(`/api/reviews/${reviewID}`)
+      .send(inc_votes)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.vote).toEqual(
+          expect.objectContaining({
+            review_id: 2,
+            votes: 104
+          })
+        );
+      });
+  });
+
+  test("PATCH - 400: Missing input", () => {
+    const inc_votes = {};
+    const reviewID = 2;
+    return request(app)
+      .patch(`/api/reviews/${reviewID}`)
+      .send(inc_votes)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Missing input");
+      });
+  });
+
+  test("PATCH - 400: Invalid input type", () => {
+    const newVote = "some string";
+    const inc_votes = { inc_votes: newVote} ;
+    const reviewID = 2;
+    return request(app)
+      .patch(`/api/reviews/${reviewID}`)
+      .send(inc_votes)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid input");
+      });
+  });
+
+  test("PATCH - 404: ID does not exist", () => {
+    return request(app)
+      .patch("/api/reviews/99999")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("ID 99999 does not exist");
+      });
+  });
+
+  test("PATCH - 400: Invalid input", () => {
+    return request(app)
+      .patch(`/api/reviews/notID`)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid input");
+      });
+  });
+});
