@@ -285,7 +285,7 @@ describe("PATCH/api/reviews/:review_id", () => {
   });
 
   test("PATCH - 400: Invalid input type", () => {
-    const newVote = '99';
+    const newVote = "some string";
     const inc_votes = { inc_votes: newVote} ;
     const reviewID = 2;
     return request(app)
@@ -293,7 +293,7 @@ describe("PATCH/api/reviews/:review_id", () => {
       .send(inc_votes)
       .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe("Invalid input type");
+        expect(body.msg).toBe("Invalid input");
       });
   });
 

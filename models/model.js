@@ -120,11 +120,6 @@ exports.updateVote = ({ inc_votes }, review_id) => {
           status: 400,
           msg: `Missing input`,
         });
-      } else if (typeof inc_votes !== "number") {
-        return Promise.reject({
-          status: 400,
-          msg: `Invalid input type`,
-        });
       } else {
         return db
           .query(
