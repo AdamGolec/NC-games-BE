@@ -315,3 +315,32 @@ describe("PATCH/api/reviews/:review_id", () => {
       });
   });
 });
+
+describe("/api/users", () => {
+  test("GET - 200: responds with an array of users objects, each of which should have properties: username, name, avatar_url", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        console.log(body.users);
+        expect(body.users).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({
+              username: expect.any(String),
+              name: expect.any(String),
+              avatar_url: expect.any(String),
+            }),
+          ])
+        );
+      });
+  });
+
+  test("GET - 404: Invalid Path", () => {
+    return request(app)
+      .get("/api/usersbadurl")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("Invalid URL");
+      });
+  });
+});
