@@ -170,7 +170,7 @@ describe("/api/reviews/:review_id/comments", () => {
 describe("POST/api/reviews/:review_id/comments", () => {
   test("POST - 201: responds with a comment added", () => {
     const newComment = {
-      author: "mallionaire",
+      username: "mallionaire",
       body: "some text",
     };
     const reviewID = 4;
@@ -182,15 +182,16 @@ describe("POST/api/reviews/:review_id/comments", () => {
         expect(body.comment).toEqual(
           expect.objectContaining({
             comment_id: 7,
-            ...newComment,
+            author: "mallionaire",
+            body: "some text",
           })
         );
       });
   });
 
-  test("POST - 400: Empty author", () => {
+  test("POST - 400: Empty username", () => {
     const newComment = {
-      author: "",
+      username: "",
       body: "some text",
     };
     const reviewID = 4;
@@ -205,7 +206,7 @@ describe("POST/api/reviews/:review_id/comments", () => {
 
   test("POST - 400: Empty body", () => {
     const newComment = {
-      author: "mallionaire",
+      username: "mallionaire",
       body: "",
     };
     const reviewID = 4;
@@ -218,9 +219,9 @@ describe("POST/api/reviews/:review_id/comments", () => {
       });
   });
 
-  test("POST - 400: Invalid author", () => {
+  test("POST - 400: Invalid username", () => {
     const newComment = {
-      author: "someUser",
+      username: "someUser",
       body: "some text",
     };
     const reviewID = 4;
@@ -229,7 +230,25 @@ describe("POST/api/reviews/:review_id/comments", () => {
       .send(newComment)
       .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe("Author someUser does not exist");
+        expect(body.msg).toBe("Username someUser does not exist");
+      });
+  });
+
+  test("POST - 400: Invalid input", () => {
+    return request(app)
+      .post(`/api/reviews/notID/comments`)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid input");
+      });
+  });
+
+  test("POST - 404: ID does not exist", () => {
+    return request(app)
+      .post("/api/reviews/99999/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("ID 99999 does not exist");
       });
   });
 });
