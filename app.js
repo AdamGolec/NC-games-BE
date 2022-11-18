@@ -5,6 +5,7 @@ const {
   getReviewsById,
   getComments,
   postComment,
+  patchReview
 } = require("./controllers/controller");
 const { CustomErrors, PsqlErrors, ServerErrors } = require("./errors/index.js");
 
@@ -17,6 +18,8 @@ app.get("/api/reviews/:review_id", getReviewsById);
 app.get("/api/reviews/:review_id/comments", getComments);
 
 app.post("/api/reviews/:review_id/comments", postComment);
+
+app.patch("/api/reviews/:review_id", patchReview);
 
 //ERROR HANDLING
 
