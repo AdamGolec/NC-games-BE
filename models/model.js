@@ -134,3 +134,7 @@ exports.updateVote = ({ inc_votes }, review_id) => {
       }
     });
 };
+
+exports.checkUsers = () => {
+  return db.query("SELECT * FROM users;").then((result) => result.rows);
+};

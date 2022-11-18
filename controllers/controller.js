@@ -5,6 +5,7 @@ const {
   comments,
   insertComment,
   updateVote,
+  checkUsers,
 } = require("../models/model");
 
 exports.getCategories = (req, res, next) => {
@@ -47,10 +48,10 @@ exports.getComments = (req, res, next) => {
     .catch((err) => {
       next(err);
     });
-  };
-  
-  exports.postComment = (req, res, next) => {
-    insertComment(req.body, req.params.review_id)
+};
+
+exports.postComment = (req, res, next) => {
+  insertComment(req.body, req.params.review_id)
     .then((comment) => {
       res.status(201).send({ comment });
     })
@@ -61,10 +62,20 @@ exports.getComments = (req, res, next) => {
 
 exports.patchReview = (req, res, next) => {
   updateVote(req.body, req.params.review_id)
-  .then((vote) => {
-    res.status(200).send({vote});
-  })
-  .catch((err) => {
-    next(err);
-  });
+    .then((vote) => {
+      res.status(200).send({ vote });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.getUsers = (req, res, next) => {
+  checkUsers()
+    .then((users) => {
+      res.status(200).send({ users });
+    })
+    .catch((err) => {
+      next(err);
+    });
 };
