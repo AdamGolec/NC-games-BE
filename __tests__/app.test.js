@@ -90,6 +90,7 @@ describe("/api/reviews/:review_id", () => {
             category: "social deduction",
             owner: "bainesface",
             created_at: "2021-01-18T10:01:41.251Z",
+            comment_count: 3,
           })
         );
       });
@@ -322,7 +323,6 @@ describe("/api/users", () => {
       .get("/api/users")
       .expect(200)
       .then(({ body }) => {
-        console.log(body.users);
         expect(body.users).toEqual(
           expect.arrayContaining([
             expect.objectContaining({

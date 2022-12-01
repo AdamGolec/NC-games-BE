@@ -28,7 +28,18 @@ exports.reviews = () => {
 
 exports.reviewsById = (review_id) => {
   return db
-    .query(`SELECT * FROM reviews WHERE review_id = $1`, [review_id])
+    .query(`SELECT reviews.* AS comment_count, comments.* FROM reviews AS reviews
+    JOIN comments AS comments ON reviews.review_id = comments.review_id
+    WHERE reviews.review_id = $1`
+    
+    `SELECT reviews.* , comments.* ,
+    COUNT(DISTINCT comments.comment_id) AS comment_count 
+    FROM reviews
+        JOIN comments ON reviews.review_id = comments.review_id
+        WHERE reviews.review_id =3
+    GROUP BY reviews.review_id, comments.comment_id;
+    
+    `, [review_id])
     .then((result) => {
       if (!result.rows[0]) {
         return Promise.reject({
