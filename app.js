@@ -1,4 +1,7 @@
 const express = require("express");
+const cors = require("cors");
+
+app.use(cors());
 const {
   getCategories,
   getReviews,
@@ -6,7 +9,7 @@ const {
   getComments,
   getUsers,
   postComment,
-  patchReview
+  patchReview,
 } = require("./controllers/controller");
 const { CustomErrors, PsqlErrors, ServerErrors } = require("./errors/index.js");
 
