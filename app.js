@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 
-app.use(cors());
+
 const {
   getCategories,
   getReviews,
@@ -14,6 +14,7 @@ const {
 const { CustomErrors, PsqlErrors, ServerErrors } = require("./errors/index.js");
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 app.get("/api/categories", getCategories);
