@@ -10,6 +10,7 @@ exports.reviews = () => {
       `
         SELECT owner,
         title,
+        review_body,
         reviews.review_id,
         review_img_url,
         category,
