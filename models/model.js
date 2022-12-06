@@ -29,16 +29,13 @@ exports.reviews = () => {
 
 exports.reviewsById = (review_id) => {
   return db
-    .query(`SELECT reviews.* AS comment_count, comments.* FROM reviews AS reviews
-    JOIN comments AS comments ON reviews.review_id = comments.review_id
-    WHERE reviews.review_id = $1`
-    
-    `SELECT reviews.* , comments.* ,
-    COUNT(DISTINCT comments.comment_id) AS comment_count 
+    .query(
+    `SELECT reviews.* ,
+    COUNT(DISTINCT comments.comment_id)::int AS comment_count 
     FROM reviews
         JOIN comments ON reviews.review_id = comments.review_id
-        WHERE reviews.review_id =3
-    GROUP BY reviews.review_id, comments.comment_id;
+        WHERE reviews.review_id = $1
+    GROUP BY reviews.review_id;
     
     `, [review_id])
     .then((result) => {
