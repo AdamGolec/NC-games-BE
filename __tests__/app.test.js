@@ -49,6 +49,7 @@ describe("/api/reviews", () => {
             owner: expect.any(String),
             title: expect.any(String),
             review_id: expect.any(Number),
+            review_body: expect.any(String),
             category: expect.any(String),
             review_img_url: expect.any(String),
             created_at: expect.any(String),
